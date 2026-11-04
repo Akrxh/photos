@@ -3,22 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#220308">
+<meta name="theme-color" content="#581224">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Photo Transfer</title>
 <style>
   * { -webkit-box-sizing: border-box; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; min-height: 100%; }
   body {
-    background: #220308; background-image: -webkit-linear-gradient(top, #5a1122, #180205); background-image: linear-gradient(180deg, #5a1122, #180205); color: #fdeef1; min-height: 100vh;
+    background: #581224; color: #fdeef1; min-height: 100vh;
     font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Roboto, Arial, sans-serif;
     -webkit-text-size-adjust: 100%; -webkit-font-smoothing: antialiased;
   }
-  .bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; pointer-events: none;
-        background: #3b0a14; background-image: -webkit-linear-gradient(top, #4a0e17, #1c0307); background-image: linear-gradient(180deg, #4a0e17, #1c0307); }
-  .veil { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; pointer-events: none;
-          background: -webkit-linear-gradient(top, rgba(20,0,3,.3), rgba(20,0,3,.1) 45%, rgba(20,0,3,.4));
-          background: linear-gradient(180deg, rgba(20,0,3,.3), rgba(20,0,3,.1) 45%, rgba(20,0,3,.4)); }
   .wrap { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; padding: 22px 16px 48px; }
 
   h1 { font-size: 30px; font-weight: 700; letter-spacing: -.5px; margin: 6px 2px 6px;
@@ -31,7 +26,6 @@
   .net { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-align: center; -webkit-align-items: center; align-items: center;
          padding: 6px 12px 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: .3px; white-space: nowrap;
          background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.2);
-         -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
          -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.3); box-shadow: inset 0 1px 0 rgba(255,255,255,.3); }
   .net i { display: block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; background: #fbbf24; }
   .net.on i { background: #4ade80; -webkit-animation: pulse 2s infinite; animation: pulse 2s infinite; }
@@ -41,7 +35,6 @@
   @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,.8); } 70% { box-shadow: 0 0 0 7px rgba(74,222,128,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); } }
   .glass {
     background: rgba(255,255,255,.07);
-    -webkit-backdrop-filter: blur(26px) saturate(170%); backdrop-filter: blur(26px) saturate(170%);
     border: 1px solid rgba(255,255,255,.16); border-radius: 22px;
     -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.35), inset 0 -1px 0 rgba(255,255,255,.05), 0 14px 40px rgba(0,0,0,.45);
     box-shadow: inset 0 1px 0 rgba(255,255,255,.35), inset 0 -1px 0 rgba(255,255,255,.05), 0 14px 40px rgba(0,0,0,.45);
@@ -121,7 +114,6 @@
   #list a {
     display: block; padding: 13px 15px; margin-bottom: 8px; color: #fdeef1; text-decoration: none; font-size: 15px;
     word-wrap: break-word; border-radius: 16px; background: rgba(255,255,255,.07);
-    -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
     border: 1px solid rgba(255,255,255,.14); -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.25); box-shadow: inset 0 1px 0 rgba(255,255,255,.25);
   }
   #list a span { color: rgba(255,224,230,.55); font-size: 13px; }
@@ -129,13 +121,14 @@
   #dbgwrap summary { cursor: pointer; font-weight: 600; }
   #dbg { margin: 10px 0 0; font-family: Menlo, Consolas, monospace; font-size: 11px; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; color: rgba(255,232,237,.85); }
   .hint { font-size: 13px; color: rgba(255,224,230,.6); margin: 12px 4px; line-height: 1.5; }
+  .chk { display: -webkit-box; display: -webkit-flex; display: flex; -webkit-box-align: center; -webkit-align-items: center; align-items: center; font-size: 14px; margin: 4px 2px 12px; color: rgba(255,232,237,.9); }
+  .chk input { width: 20px; height: 20px; margin: 0 10px 0 0; }
 </style>
 </head>
 <body>
-<div class="bg"></div><div class="veil"></div>
 <div class="wrap">
   <div class="head"><h1>Photo Transfer</h1><div class="net wait" id="net"><i></i><span id="netTxt">Connecting</span></div></div>
-  <p class="sub">Send up to 50 photos straight from one phone to another. Photos are never uploaded or stored.</p>
+  <p class="sub">Send up to 50 photos to another phone. They pass through the cloud for a moment and are deleted as soon as the other phone has them.</p>
 
   <div class="seg glass" id="seg"><div class="pill"></div>
     <button id="tabSend" class="on" type="button">Send</button>
@@ -146,6 +139,7 @@
     <label class="pick" for="files">Choose photos (max 50)</label>
     <input id="files" type="file" accept="image/*" multiple>
     <div class="info" id="summary">No photos chosen.</div>
+    <label class="chk"><input type="checkbox" id="small" checked><span id="smallTxt">Smaller photos (faster, recommended)</span></label>
     <button class="main" id="btnCode" type="button">Get code</button>
     <div id="bigcode" style="display:none"></div>
   </div>
@@ -161,7 +155,6 @@
   <div id="list"></div>
   <button id="btnAll" type="button" style="display:none;margin-top:6px">Save all</button>
   <div class="hint" id="hint" style="display:none">On iPhone: tap a photo, then press and hold it and choose Add to Photos. Keep both screens on until it finishes.</div>
-  <details id="dbgwrap" class="glass"><summary>Details (for troubleshooting)</summary><pre id="dbg">Nothing yet.</pre></details>
   <div class="info" id="reset" style="display:none"><button id="btnReset" type="button">Start over</button></div>
 </div>
 
@@ -182,105 +175,31 @@
     appId: "1:207630793685:web:daa84140a188ce1cfa5b5c"
   };
 
-  var MAX = 50, CH = 16384, HIGH = 1048576, WAIT_MS = 180000;
-  // ---- RELAY (TURN) SETTINGS ----
-  var MY_ICE_SERVERS = [
-  ];
-
-  var STUN = [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:stun1.l.google.com:19302" }];
-  var SHARED_TURN = [
-    { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
-    { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" },
-    { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" }
-  ];
-  function iceList(noTls) {
-    var list = STUN.concat(MY_ICE_SERVERS.length ? MY_ICE_SERVERS : SHARED_TURN), out = [], i, j, u, keep;
-    if (!noTls) return list;
-    for (i = 0; i < list.length; i++) {
-      u = list[i].urls; u = (typeof u === "string") ? [u] : u; keep = [];
-      for (j = 0; j < u.length; j++) if (u[j].indexOf("turns:") !== 0) keep.push(u[j]);
-      if (keep.length) out.push({ urls: keep, username: list[i].username, credential: list[i].credential });
-    }
-    return out;
-  }
+  var MAX = 50;            // photos per transfer
+  var CHUNK = 600000;      // characters per Firestore document (limit is 1 MiB)
+  var WINDOW = 12;         // chunks allowed in the cloud at once
+  var PAR = 3;             // parallel uploads
+  var STALL_MS = 90000;    // give up if the other phone goes silent
+  var TTL_MS = 1800000;    // safety expiry for leftovers (use a Firestore TTL policy on expireAt)
+  var MAXDIM = 2048, QUALITY = 0.85;
 
   function $(id) { return document.getElementById(id); }
   var statusEl = $("status"), fillEl = $("fill"), listEl = $("list");
   var db = null;
   try { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); } catch (e) {}
 
-  var pc = null, dc = null, room = null, unsub = null, waitTimer = null;
-  var chosen = [], finished = false, savedLinks = [], connTimer = null;
+  var room = null, unsubRoom = null, unsubChunks = null, pumpTimer = null, stallTimer = null;
+  var chosen = [], finished = false, dead = false, savedLinks = [];
 
   function say(m, k) { statusEl.className = "glass" + (k ? " " + k : ""); statusEl.textContent = m; }
   function pct(n) { fillEl.style.width = Math.max(0, Math.min(100, n)) + "%"; }
   function mb(n) { return n < 1048576 ? Math.round(n / 1024) + " KB" : (n / 1048576).toFixed(1) + " MB"; }
   function show(id, on) { $(id).style.display = on ? "block" : "none"; }
+  function msg(e) { return e && e.message ? e.message : String(e); }
+  function exp() { return new Date(new Date().getTime() + TTL_MS); }
+  function pad(n) { return ("000000" + n).slice(-6); }
 
-  function dropRoom() {
-    if (unsub) { try { unsub(); } catch (e) {} unsub = null; }
-    if (room) { try { room["delete"](); } catch (e2) {} room = null; }
-  }
-  function closeAll() {
-    clearTimeout(waitTimer); clearTimeout(connTimer);
-    dropRoom();
-    try { if (dc) { dc.onclose = null; dc.close(); } } catch (e) {}
-    try { if (pc) pc.close(); } catch (e2) {}
-    dc = null; pc = null;
-  }
-  function fail(m) { log("FAILED: " + m); closeAll(); say(m, "err"); show("reset", true); }
-
-  window.addEventListener("beforeunload", function () { dropRoom(); });
-
-  function waitIce(p, cb) {
-    var done = false;
-    function fin() { if (done) return; done = true; cb(); }
-    if (p.iceGatheringState === "complete") { fin(); return; }
-    p.onicecandidate = function (e) { if (!e.candidate) fin(); };
-    p.onicegatheringstatechange = function () { if (p.iceGatheringState === "complete") fin(); };
-    setTimeout(fin, 6000);
-  }
-
-  var dbgEl = $("dbg"), dbgLines = [], t0 = new Date().getTime();
-  function log(m) {
-    dbgLines.push(Math.round((new Date().getTime() - t0) / 100) / 10 + "s  " + m);
-    if (dbgLines.length > 60) dbgLines.shift();
-    dbgEl.textContent = dbgLines.join("\n");
-  }
-  function cands(sdp) {
-    sdp = sdp || "";
-    function n(re) { var m = sdp.match(re); return m ? m.length : 0; }
-    return "host " + n(/ typ host/g) + " (mDNS " + n(/\.local /g) + "), srflx " + n(/ typ srflx/g) + ", relay " + n(/ typ relay/g);
-  }
-  function connHelp() {
-    var relay = pc && pc.localDescription && /typ relay/.test(pc.localDescription.sdp || "");
-    return "Could not link the two phones. " + (relay
-      ? "Try putting both phones on the same Wi-Fi, then start over."
-      : "No relay was available, and this network blocks the direct link. Add your free TURN details (see the top of the file) or use the same Wi-Fi on both phones.");
-  }
-  function armConnWatch() {
-    clearTimeout(connTimer);
-    connTimer = setTimeout(function () {
-      if (!finished && !(dc && dc.readyState === "open")) fail(connHelp());
-    }, 35000);
-  }
-
-  function newPeer() {
-    try { pc = new RTCPeerConnection({ iceServers: iceList(false) }); }
-    catch (e) { pc = new RTCPeerConnection({ iceServers: iceList(true) }); }
-    log("ICE servers: " + (MY_ICE_SERVERS.length ? "your TURN list" : "shared TURN only") + ", browser: " + (navigator.userAgent || "?").replace(/^Mozilla\/5.0 /, "").slice(0, 70));
-    pc.onconnectionstatechange = function () { if (pc) log("connection state: " + pc.connectionState); };
-    pc.onicegatheringstatechange = function () { if (pc) log("gathering: " + pc.iceGatheringState); };
-    pc.oniceconnectionstatechange = function () {
-      var s = pc ? pc.iceConnectionState : "";
-      log("ICE state: " + s);
-      if (finished) return;
-      if (s === "failed") fail(connHelp());
-      else if (s === "checking") say("Connecting... finding a path between the phones");
-      else if (s === "disconnected") say("Connection unstable... waiting");
-    };
-  }
-
+  // ---------- online / offline tag ----------
   var netEl = $("net"), netTxt = $("netTxt"), probing = false;
   function setNet(s) {
     netEl.className = "net " + s;
@@ -304,6 +223,31 @@
   window.addEventListener("offline", function () { setNet("off"); });
   document.addEventListener("visibilitychange", function () { if (!document.hidden) probe(); });
 
+  // ---------- cleanup ----------
+  // Deletes every leftover chunk, then the room itself.
+  function wipe(ref, done) {
+    var end = function () { if (done) done(); };
+    ref.collection("c").limit(200).get().then(function (snap) {
+      if (snap.empty) { ref["delete"]().then(end, end); return; }
+      var b = db.batch();
+      snap.forEach(function (d) { b["delete"](d.ref); });
+      b.commit().then(function () { wipe(ref, done); }, function () { ref["delete"]().then(end, end); });
+    })["catch"](end);
+  }
+  function stopAll() {
+    dead = true;
+    clearTimeout(pumpTimer); clearTimeout(stallTimer);
+    if (unsubRoom) { try { unsubRoom(); } catch (e) {} unsubRoom = null; }
+    if (unsubChunks) { try { unsubChunks(); } catch (e2) {} unsubChunks = null; }
+  }
+  function fail(m) {
+    var r = room; room = null;
+    stopAll();
+    if (r) wipe(r);
+    say(m, "err"); show("reset", true);
+  }
+
+  // ---------- tabs ----------
   function tab(which) {
     var send = which === "send";
     $("pSend").className = "panel glass card" + (send ? " show fromL" : "");
@@ -316,6 +260,15 @@
   $("tabSend").addEventListener("click", function () { tab("send"); });
   $("tabRecv").addEventListener("click", function () { tab("recv"); });
   $("btnReset").addEventListener("click", function () { location.reload(); });
+  window.addEventListener("beforeunload", function () { if (room && !finished) { try { room["delete"](); } catch (e) {} } });
+
+  // ---------- SEND ----------
+  var ua = navigator.userAgent || "", om = ua.match(/OS (\d+)_/);
+  if (/iPhone|iPad|iPod/.test(ua) && om && parseInt(om[1], 10) < 13) {
+    // Old iPhone Safari can turn photos sideways when shrinking them, so keep originals by default.
+    $("small").checked = false;
+    $("smallTxt").textContent = "Smaller photos (can rotate some photos on this old iPhone)";
+  }
 
   $("files").addEventListener("change", function () {
     var all = Array.prototype.slice.call(this.files || []);
@@ -329,7 +282,7 @@
 
   $("btnCode").addEventListener("click", function () {
     if (!chosen.length) { say("Choose at least one photo first.", "err"); return; }
-    if (!db || !window.RTCPeerConnection) { say("This browser cannot do direct transfer.", "err"); return; }
+    if (!db) { say("Could not load Firebase. Check your internet and reload.", "err"); return; }
     $("btnCode").disabled = true;
     makeRoom(0);
   });
@@ -339,145 +292,193 @@
     var ref = db.collection("rooms").doc(code);
     ref.get().then(function (snap) {
       if (snap.exists && tries < 5) { makeRoom(tries + 1); return; }
-      beginOffer(code, ref);
-    })["catch"](function (e) { fail("Could not reach the server: " + (e && e.message ? e.message : e)); });
+      return ref.set({ count: chosen.length, joined: false, ack: 0, expireAt: exp() }).then(function () { openRoom(code, ref); });
+    })["catch"](function (e) { fail("Could not reach the server: " + msg(e)); });
   }
 
-  function beginOffer(code, ref) {
-    newPeer();
-    dc = pc.createDataChannel("photos");
-    dc.binaryType = "arraybuffer";
-    dc.onopen = function () { log("data channel OPEN"); clearTimeout(waitTimer); clearTimeout(connTimer); dropRoom(); sendAll(); };
-    dc.onerror = function () { log("data channel error"); };
-    dc.onclose = function () { if (!finished) fail("Connection closed before it finished."); };
-    dc.onmessage = function (e) {
-      if (typeof e.data === "string" && JSON.parse(e.data).t === "ack") {
+  function openRoom(code, ref) {
+    var started = false, acked = 0, lastAck = new Date().getTime();
+    room = ref;
+    $("bigcode").textContent = code; show("bigcode", true);
+    say("Type this code on the other phone (Receive tab). Waiting...");
+    stallTimer = setTimeout(function () { if (!started) fail("Nobody joined within 10 minutes. Start over."); }, 600000);
+
+    unsubRoom = ref.onSnapshot(function (s) {
+      if (dead) return;
+      var v = s.data();
+      if (!s.exists) { if (started && !finished) fail("The other phone ended the transfer."); return; }
+      if (typeof v.ack === "number" && v.ack !== acked) { acked = v.ack; lastAck = new Date().getTime(); }
+      if (v.joined && !started) { started = true; clearTimeout(stallTimer); show("bigcode", false); say("Connected. Preparing photos..."); sendAll(); }
+      if (v.finished && !finished) {
         finished = true; pct(100);
-        say("All " + chosen.length + " photos sent.", "ok");
-        show("reset", true);
-        setTimeout(closeAll, 1000);
+        say("All " + chosen.length + " photos sent.", "ok"); show("reset", true);
+        var r = room; room = null; stopAll(); wipe(r);
       }
-    };
-    pc.createOffer().then(function (o) { return pc.setLocalDescription(o); }).then(function () {
-      waitIce(pc, function () {
-        var d = pc.localDescription;
-        log("sender offer ready. local candidates: " + cands(d.sdp));
-        ref.set({ offer: { type: d.type, sdp: d.sdp }, expireAt: new Date(new Date().getTime() + 600000) }).then(function () {
-          room = ref;
-          $("bigcode").textContent = code; show("bigcode", true);
-          say("Type this code on the other phone (Receive tab). Waiting...");
-          var got = false;
-          unsub = ref.onSnapshot(function (s) {
-            var v = s.data();
-            if (v && v.answer && !got) {
-              got = true; log("answer received. remote candidates: " + cands(v.answer.sdp)); say("Connecting..."); clearTimeout(waitTimer); armConnWatch();
-              pc.setRemoteDescription(new RTCSessionDescription(v.answer))["catch"](function (e) { log("setRemoteDescription error: " + (e && e.message ? e.message : e)); fail("Connection failed. Start over."); });
-            }
-          });
-          waitTimer = setTimeout(function () { fail("Nobody connected within 3 minutes. Start over."); }, WAIT_MS);
-        })["catch"](function (e) { fail("Could not reach the server: " + (e && e.message ? e.message : e)); });
-      });
-    })["catch"](function (e) { log("error: " + (e && e.message ? e.message : e)); fail("Could not start the connection."); });
-  }
+    }, function (e) { fail("Lost the connection: " + msg(e)); });
 
-  function sendAll() {
-    var total = 0, sent = 0, i = 0, k;
-    for (k = 0; k < chosen.length; k++) total += chosen[k].size;
-    show("bigcode", false);
-    say("Sending photos...");
-    dc.send(JSON.stringify({ t: "meta", count: chosen.length, total: total }));
-    function next() {
-      if (i >= chosen.length) { dc.send(JSON.stringify({ t: "done" })); return; }
-      var f = chosen[i], r = new FileReader();
-      r.onerror = function () { fail("Could not read " + f.name); };
-      r.onload = function () {
-        var buf = r.result, pos = 0;
-        dc.send(JSON.stringify({ t: "file", name: f.name, type: f.type || "image/jpeg", size: buf.byteLength }));
-        (function pump() {
-          if (!dc || dc.readyState !== "open") return;
-          while (pos < buf.byteLength) {
-            if (dc.bufferedAmount > HIGH) { setTimeout(pump, 40); return; }
-            var part = buf.slice(pos, pos + CH);
-            dc.send(part); pos += part.byteLength; sent += part.byteLength;
+    function sendAll() {
+      var fi = 0, seq = 0, total = chosen.length;
+
+      function nextFile() {
+        if (dead) return;
+        if (fi >= total) {
+          say("Waiting for the other phone to finish...");
+          ref.update({ done: true, files: total })["catch"](function (e) { fail("Could not finish: " + msg(e)); });
+          stallTimer = setTimeout(function () { if (!finished) fail("The other phone did not finish. Start over."); }, STALL_MS * 2);
+          return;
+        }
+        say("Preparing photo " + (fi + 1) + " of " + total + "...");
+        prepare(chosen[fi], function (err, b64, type, name) {
+          if (err) { fail(err); return; }
+          var chunks = [], p;
+          for (p = 0; p < b64.length; p += CHUNK) chunks.push(b64.substr(p, CHUNK));
+          sendChunks(chunks, type, name, function () { fi++; pct((fi / total) * 100); nextFile(); });
+        });
+      }
+
+      function sendChunks(chunks, type, name, cb) {
+        var n = chunks.length, i = 0, inflight = 0, doneN = 0, myFile = fi;
+        function pump() {
+          clearTimeout(pumpTimer);
+          if (dead) return;
+          while (i < n && inflight < PAR && (seq - acked) < WINDOW) {
+            (function (idx, s) {
+              inflight++;
+              ref.collection("c").doc(pad(s)).set({ s: s, f: myFile, i: idx, n: n, name: name, type: type, d: chunks[idx], expireAt: exp() }).then(function () {
+                inflight--; doneN++; chunks[idx] = null;
+                say("Sending photo " + (myFile + 1) + " of " + total + "...");
+                pct(((myFile + doneN / n) / total) * 100);
+                if (doneN === n) cb(); else pump();
+              })["catch"](function (e) { fail("Could not send: " + msg(e)); });
+            })(i, seq);
+            i++; seq++;
           }
-          dc.send(JSON.stringify({ t: "end" }));
-          pct(total ? (sent / total) * 100 : 100);
-          say("Sending photo " + (i + 1) + " of " + chosen.length + "...");
-          i++; next();
-        })();
-      };
-      r.readAsArrayBuffer(f);
+          if (i < n) {
+            if ((seq - acked) >= WINDOW && new Date().getTime() - lastAck > STALL_MS) { fail("The other phone stopped responding. Start over."); return; }
+            pumpTimer = setTimeout(pump, 300);
+          }
+        }
+        pump();
+      }
+      nextFile();
     }
-    next();
   }
 
+  // Turns one photo into [base64 text, mime type, file name]
+  function readB64(file, cb) {
+    var r = new FileReader();
+    r.onload = function () { var s = r.result; cb(null, s.slice(s.indexOf(",") + 1), file.type || "image/jpeg", file.name); };
+    r.onerror = function () { cb("Could not read " + file.name); };
+    r.readAsDataURL(file);
+  }
+  function prepare(file, cb) {
+    var small = $("small").checked && /^image\/(jpeg|png|webp|bmp)/.test(file.type || "");
+    if (!small) { readB64(file, cb); return; }
+    var url = URL.createObjectURL(file), img = new Image();
+    img.onload = function () {
+      try {
+        var w = img.naturalWidth, h = img.naturalHeight, sc = Math.min(1, MAXDIM / Math.max(w, h));
+        var c = document.createElement("canvas");
+        c.width = Math.round(w * sc); c.height = Math.round(h * sc);
+        var x = c.getContext("2d");
+        x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height);
+        x.drawImage(img, 0, 0, c.width, c.height);
+        var d = c.toDataURL("image/jpeg", QUALITY);
+        URL.revokeObjectURL(url); c.width = 1; c.height = 1;
+        var b64 = d.slice(d.indexOf(",") + 1);
+        if (b64.length >= file.size * 1.34) { readB64(file, cb); return; }
+        cb(null, b64, "image/jpeg", (file.name || "photo").replace(/\.[^.]*$/, "") + ".jpg");
+      } catch (e) { URL.revokeObjectURL(url); readB64(file, cb); }
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); readB64(file, cb); };
+    img.src = url;
+  }
+
+  // ---------- RECEIVE ----------
   $("code").addEventListener("input", function () { this.value = this.value.replace(/[^0-9]/g, "").slice(0, 6); });
 
   $("btnConnect").addEventListener("click", function () {
     var code = $("code").value;
     if (code.length !== 6) { say("Enter the 6-digit code first.", "err"); return; }
-    if (!db || !window.RTCPeerConnection) { say("This browser cannot do direct transfer.", "err"); return; }
+    if (!db) { say("Could not load Firebase. Check your internet and reload.", "err"); return; }
     $("btnConnect").disabled = true;
     say("Looking for the sending phone...");
     var ref = db.collection("rooms").doc(code);
     ref.get().then(function (snap) {
-      if (!snap.exists || !snap.data().offer) { $("btnConnect").disabled = false; say("No sender found for this code. On the other phone, tap Get code first.", "err"); return; }
-      room = ref;
-      listen(snap.data().offer, ref);
-    })["catch"](function (e) { fail("Could not reach the server: " + (e && e.message ? e.message : e)); });
+      if (!snap.exists) { $("btnConnect").disabled = false; say("No sender found for this code. On the other phone, tap Get code first.", "err"); return; }
+      if (snap.data().joined) { $("btnConnect").disabled = false; say("This code is already in use. Ask the sender for a new code.", "err"); return; }
+      return ref.update({ joined: true }).then(function () { room = ref; receive(ref, snap.data().count); });
+    })["catch"](function (e) { fail("Could not reach the server: " + msg(e)); });
   });
 
-  function listen(offer, ref) {
-    var cur = null, count = 0, total = 0, got = 0, made = 0;
-    newPeer();
-    pc.ondatachannel = function (ev) {
-      dc = ev.channel; dc.binaryType = "arraybuffer";
-      dc.onopen = function () { log("data channel OPEN"); clearTimeout(connTimer); };
-      dc.onerror = function () { log("data channel error"); };
-      log("data channel received");
-      dc.onclose = function () { if (!finished) fail("Connection closed before it finished."); };
-      dc.onmessage = function (e) {
-        var d = e.data, m;
-        if (typeof d === "string") {
-          m = JSON.parse(d);
-          if (m.t === "meta") { count = m.count; total = m.total; clearTimeout(waitTimer); clearTimeout(connTimer); say("Receiving " + count + " photos (" + mb(total) + ")..."); }
-          else if (m.t === "file") { cur = { name: m.name, type: m.type, parts: [], size: 0 }; }
-          else if (m.t === "end") { addRow(cur); cur = null; made++; say("Received " + made + " of " + count + "..."); }
-          else if (m.t === "done") {
-            finished = true; pct(100); say("Done. " + made + " photos received.", "ok");
-            show("hint", true); show("reset", true);
-            if ("download" in document.createElement("a")) show("btnAll", true);
-            dc.send(JSON.stringify({ t: "ack" }));
-          }
-        } else if (cur) {
-          cur.parts.push(d); cur.size += d.byteLength; got += d.byteLength;
-          pct(total ? (got / total) * 100 : 0);
-        }
-      };
-    };
-    log("receiver got offer. remote candidates: " + cands(offer.sdp));
-    pc.setRemoteDescription(new RTCSessionDescription(offer)).then(function () { return pc.createAnswer(); })
-      .then(function (a) { return pc.setLocalDescription(a); })
-      .then(function () {
-        waitIce(pc, function () {
-          var d = pc.localDescription;
-          log("receiver answer ready. local candidates: " + cands(d.sdp));
-          ref.update({ answer: { type: d.type, sdp: d.sdp } }).then(function () {
-            room = null;
-            say("Connecting...");
-            armConnWatch();
-          })["catch"](function () { fail("The sender is gone. Ask them to tap Get code again."); });
-        });
-      })["catch"](function (e) { log("error: " + (e && e.message ? e.message : e)); fail("Could not start the connection."); });
+  function b64ToBytes(s) {
+    var bin = atob(s), n = bin.length, u = new Uint8Array(n), i;
+    for (i = 0; i < n; i++) u[i] = bin.charCodeAt(i);
+    return u;
   }
 
-  function addRow(f) {
-    var blob = new Blob(f.parts, { type: f.type });
+  function receive(ref, count) {
+    var files = {}, made = 0, got = 0, doneFlag = false, lastRecv = new Date().getTime();
+    say("Connected. Waiting for photos...");
+
+    function progress() {
+      var part = 0, k, f;
+      for (k in files) { f = files[k]; if (f.parts) part += f.got / f.n; }
+      pct(count ? ((made + part) / count) * 100 : 0);
+    }
+    function check() {
+      if (!doneFlag || made < count || finished) return;
+      finished = true; pct(100);
+      say("Done. " + made + (made === 1 ? " photo" : " photos") + " received.", "ok");
+      show("hint", true); show("reset", true);
+      if ("download" in document.createElement("a")) show("btnAll", true);
+      stopAll();
+      ref.update({ finished: true }).then(function () { setTimeout(function () { wipe(ref); }, 5000); },
+                                          function () { wipe(ref); });
+    }
+
+    stallTimer = setInterval(function () {
+      if (!finished && new Date().getTime() - lastRecv > STALL_MS) { clearInterval(stallTimer); fail("No photos arrived for 90 seconds. Ask the sender to check their screen."); }
+    }, 10000);
+
+    unsubRoom = ref.onSnapshot(function (s) {
+      if (dead) return;
+      if (!s.exists) { if (!finished) fail("The sender ended the transfer."); return; }
+      var v = s.data();
+      if (v.done) { doneFlag = true; check(); }
+    }, function (e) { fail("Lost the connection: " + msg(e)); });
+
+    unsubChunks = ref.collection("c").orderBy("s").onSnapshot(function (snap) {
+      if (dead) return;
+      var ch = snap.docChanges(), i, d, f, refs = [];
+      for (i = 0; i < ch.length; i++) {
+        if (ch[i].type !== "added") continue;
+        d = ch[i].doc.data(); refs.push(ch[i].doc.ref);
+        f = files[d.f] || (files[d.f] = { name: d.name, type: d.type, n: d.n, parts: [], got: 0 });
+        if (f.parts && !f.parts[d.i]) {
+          f.parts[d.i] = b64ToBytes(d.d); f.got++; got++;
+          if (f.got === f.n) { addRow(f.name, f.type, f.parts); f.parts = null; made++; }
+        }
+      }
+      if (!refs.length) return;
+      lastRecv = new Date().getTime();
+      say("Received " + made + " of " + count + " photos...");
+      progress();
+      var b = db.batch();
+      for (i = 0; i < refs.length; i++) b["delete"](refs[i]);
+      b.commit()["catch"](function () {});
+      ref.update({ ack: got })["catch"](function () {});
+      check();
+    }, function (e) { fail("Lost the connection: " + msg(e)); });
+  }
+
+  function addRow(name, type, parts) {
+    var blob = new Blob(parts, { type: type });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
-    a.href = url; a.target = "_blank"; a.setAttribute("download", f.name);
-    a.appendChild(document.createTextNode(f.name + " "));
-    var s = document.createElement("span"); s.textContent = "(" + mb(f.size) + ")";
+    a.href = url; a.target = "_blank"; a.setAttribute("download", name);
+    a.appendChild(document.createTextNode(name + " "));
+    var s = document.createElement("span"); s.textContent = "(" + mb(blob.size) + ")";
     a.appendChild(s);
     listEl.appendChild(a);
     savedLinks.push(a);
